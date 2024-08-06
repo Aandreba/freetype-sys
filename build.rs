@@ -24,6 +24,7 @@ fn main() {
     }
 
     let mut build = cc::Build::new();
+    let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap();
 
     build
         .cpp(true)
@@ -31,6 +32,10 @@ fn main() {
         .include(".")
         .include("freetype2/include")
         .define("FT2_BUILD_LIBRARY", None);
+
+    if target_os == "emscripten" {
+        build.flag("-pthread");
+    }
 
     add_sources(
         &mut build,
